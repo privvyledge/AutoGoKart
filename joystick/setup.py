@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'teleoperation'
+package_name = 'joystick'
 
 setup(
     name=package_name,
@@ -14,12 +14,13 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='uros',
-    maintainer_email='uros@todo.todo',
+    maintainer_email='rajarajannaveenkumar@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+        	"joysick = joystick.joy_node:main"
         ],
     },
 )

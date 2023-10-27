@@ -60,6 +60,15 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    source /Path to WorkSpace/<WorkSpace>/install/setup.bash
    ros2 run nmea_navsat_driver read_lat_long
    ```
+   (4) Joystick
+   ```
+   ros2 run joy
+   ros2 run joystick joystick
+   ```
+   ROStopic:
+   - `control_command.header.frame_id`: `at9s_joy`
+   - `control_command.point.x`: throttle command (-1: reverse max, 1: forward max)
+   - `control_command.point.y`: steering command (-1: right max, 1: left max)
    
 ## ROS Node - Details
 
