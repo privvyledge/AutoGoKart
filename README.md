@@ -21,19 +21,33 @@ check if the usb ports are binded
 ll /dev/imu_usb
 ll /dev/gps_usb
 ```
-4. Build packages
-Notice, make sure you return to the workspace, don't run `colcon build` in src
+4.1 Run in Docker
+- build image from dockerfile
 ```
-cd ..
+docker build . 
+```
+- build and run container in interactive mode
+```
+docker run -it --mount type=bind,src="$(pwm)",target=/gokart_ws [docke_image_name] bash
+```
+4. Build packages
+Now, you are inside the container, since you bind the workspace, anychange you make in container, it will be refleacted in you workspace, be careful
+```
+cd /gokart_ws
 colcon build
-source /Path to WorkSpace/<WorkSpace>/install/setup.bash
+source /Path to gokart_ws/gokart_ws/install/setup.bash
 ```
 5. Run Launch files <br>
-   (1) IMU
+   (1) AT9S joystick
+   ```
+   ros2 run at9s_joy at9s_joy
+   ```
+
+   (2) IMU
    ```
    ros2 launch wit_ros2_imu rviz_and_imu.launch.py
    ```
-   (2) GPS
+   (3) GPS
    ```
    ros2 launch nmea_navsat_driver nmea_serial_driver.launch.py
    ```
