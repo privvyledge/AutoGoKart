@@ -69,7 +69,6 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    - `control_command.header.frame_id`: `at9s_joy`
    - `control_command.point.x`: throttle command (-1: reverse max, 1: forward max)
    - `control_command.point.y`: steering command (-1: right max, 1: left max)
-   
   (5) Command Center
   ```
   <run joystick node or cockpit node>
