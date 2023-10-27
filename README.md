@@ -53,7 +53,7 @@ Read Angle from SBW Encoder  |  5  |  gokart_sbw  |  2  |  sbw_feedback  |   geo
 Send Steering Angle To SBW Encoder  |  5  |  gokart_sbw  |     |  sbw_control  |   geometery_msgs/msg/PointStamped
 Read Steering Control And Throttle Control from Computer/ Controller  |  7  | gokart_command  |  1  |  control_command  |  geometery_msgs/msg/PointStamped
 Send JoyStick(Gamepad) To Command Extractor  |  3  |  gokart_joystick  |  4   |  joystick_command  |   sensor_msgs/msg/joy
-Send Cockpit To Command Extractor  |  2  |  gokart_cockpiy  |  5   |  cockpit_command  |   geometery_msgs/msg/PointStamped
+Send Cockpit To Command Extractor  |  2  |  gokart_cockpit  |  5   |  cockpit_command  |   geometery_msgs/msg/PointStamped
 
 
 
