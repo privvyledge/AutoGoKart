@@ -45,6 +45,8 @@ source /Path to WorkSpace/<WorkSpace>/install/setup.bash
    
 ## ROS Node - Details
 
+![IMG_0162](https://github.com/Naveenkumarar/AutoGoKart/assets/29993827/5eb8c6c0-c0e8-4dfe-831c-f43d045df81f)
+
 Usage  |  Node number  |  Node Name  |  Topic number  |  Topic Name  |  Msg Type
 ---  |---  |---  |---  |---  |---
 Read Angle from SBW Encoder  |  5  |  gokart_sbw  |  2  |  sbw_feedback  |   geometery_msgs/msg/PointStamped
@@ -52,6 +54,7 @@ Send Steering Angle To SBW Encoder  |  5  |  gokart_sbw  |     |  sbw_control  |
 Read Steering Control And Throttle Control from Computer/ Controller  |  7  | gokart_command  |  1  |  control_command  |  geometery_msgs/msg/PointStamped
 Send JoyStick(Gamepad) To Command Extractor  |  3  |  gokart_joystick  |  4   |  joystick_command  |   sensor_msgs/msg/joy
 Send Cockpit To Command Extractor  |  2  |  gokart_cockpiy  |  5   |  cockpit_command  |   geometery_msgs/msg/PointStamped
+
 
 
 
