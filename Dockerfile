@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-colcon-mixin \
     python3-rosdep \
     python3-vcstool \
+    pip \
     && rm -rf /var/lib/apt/lists/*
+    
 
 # bootstrap rosdep
 RUN rosdep init && \
@@ -28,3 +30,6 @@ RUN colcon mixin add default \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-base=0.10.0-1* \
     && rm -rf /var/lib/apt/lists/*
+
+# install pyserial
+RUN pip install pyserial

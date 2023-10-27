@@ -13,14 +13,13 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='zyblend',
-    maintainer_email='zyblend@todo.todo',
+    maintainer='root',
+    maintainer_email='root@todo.todo',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        'at9s_joy = at9s_joy.at9s_joy:main'
-        ],
+        'at9s_joy=at9s_joy.at9s_joy:main'],
     },
 )
