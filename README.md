@@ -8,7 +8,7 @@ mkdir -p <WorkSpace>
 2. Clone package into src
 ```
 cd <WorkSpace>
-git clone https://github.com/ZYblend/AutoGoKart.git src
+git clone https://github.com/resilient-autonomous-systems-lab/AutoGoKart.git src
 ```
 3. Register USB ports
 ```
@@ -28,7 +28,7 @@ docker build .
 ```
 - build and run container in interactive mode
 ```
-docker run -it --mount type=bind,src="$(pwm)",target=/gokart_ws [docke_image_name] bash
+docker run -it --name [container_name] --device /dev/ttyACM0 /dev/imu_usb /dev/gps_usb --mount type=bind,src="$(pwm)",target=/gokart_ws [docke_image_name] bash
 ```
 4. Build packages
 Now, you are inside the container, since you bind the workspace, anychange you make in container, it will be refleacted in you workspace, be careful
