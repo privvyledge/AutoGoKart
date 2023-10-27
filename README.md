@@ -70,14 +70,24 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    - `control_command.point.x`: throttle command (-1: reverse max, 1: forward max)
    - `control_command.point.y`: steering command (-1: right max, 1: left max)
    
+  (5) Command Center
+  ```
+  <run joystick node or cockpit node>
+  ros2 run command_center command_center
+  ```
+  ROStopic:
+   - `sbw_control.header.frame_id`: `sbw_input`
+   - `sbw_control.point.x`: steering command (-30: right max, 30: left max)
+  
+   
 ## ROS Node - Details
 
 ![IMG_0162](https://github.com/Naveenkumarar/AutoGoKart/assets/29993827/5eb8c6c0-c0e8-4dfe-831c-f43d045df81f)
 
 Usage  |  Node number  |  Node Name  |  Topic number  |  Topic Name  |  Msg Type
 ---  |---  |---  |---  |---  |---
-Read Angle from SBW Encoder  |  5  |  gokart_sbw  |  2  |  sbw_feedback  |   geometery_msgs/msg/PointStamped
-Send Steering Angle To SBW Encoder  |  5  |  gokart_sbw  |     |  sbw_control  |   geometery_msgs/msg/PointStamped
+Read Angle from SBW Encoder  |  5  |  gokart_sbw  |    |  sbw_feedback  |   geometery_msgs/msg/PointStamped
+Send Steering Angle To SBW Encoder  |  5  |  gokart_sbw  |   2  |  sbw_control  |   geometery_msgs/msg/PointStamped
 Read Steering Control And Throttle Control from Computer/ Controller  |  7  | gokart_command  |  1  |  control_command  |  geometery_msgs/msg/PointStamped
 Send JoyStick(Gamepad) To Command Extractor  |  3  |  gokart_joystick  |  4   |  joystick_command  |   sensor_msgs/msg/joy
 Send Cockpit To Command Extractor  |  2  |  gokart_cockpit  |  5   |  cockpit_command  |   geometery_msgs/msg/PointStamped
