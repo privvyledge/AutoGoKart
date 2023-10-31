@@ -46,7 +46,7 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    - `header.frame_id`: `at9s_joy`
    - `axes[0]`: throttle command (float, -1: reverse max, 1: forward max)
    - `axes[1]`: steering command (float, -1: right max, 1: left max)
-   - `buttons`: [sWA, sWB, sWC, sWD] (int, -1: disabled (buttons are at reverse position), 1: Enabled)
+   - `buttons`: [sWA, sWB, sWC, sWD] (int, 0: disabled (buttons are at reverse position), 1: Enabled)
 
    (2) IMU
    ```
