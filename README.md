@@ -28,7 +28,7 @@ docker build .
 ```
 - build and run container in interactive mode
 ```
-docker run -it --name [container_name] --device /dev/ttyACM0 /dev/imu_usb /dev/gps_usb --mount type=bind,src="$(pwm)",target=/gokart_ws [docke_image_name] bash
+docker run -it --name [container_name] --device /dev/ttyACM0 --device /dev/imu_usb --device /dev/gps_usb --mount type=bind,src="$(pwm)",target=/gokart_ws [docke_image_name] bash
 ```
 4. Build packages
 Now, you are inside the container, since you bind the workspace, anychange you make in container, it will be refleacted in you workspace, be careful
@@ -42,10 +42,11 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    ```
    ros2 run at9s_joy at9s_joy
    ```
-   ROStopic:
-   - `control_command.header.frame_id`: `at9s_joy`
-   - `control_command.point.x`: throttle command (-1: reverse max, 1: forward max)
-   - `control_command.point.y`: steering command (-1: right max, 1: left max)
+   ROStopic: `joy/at9s`
+   - `header.frame_id`: `at9s_joy`
+   - `axes[0]`: throttle command (float, -1: reverse max, 1: forward max)
+   - `axes[1]`: steering command (float, -1: right max, 1: left max)
+   - `buttons`: [sWA, sWB, sWC, sWD] (int, -1: disabled (buttons are at reverse position), 1: Enabled)
 
    (2) IMU
    ```
@@ -55,6 +56,11 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    ```
    ros2 launch nmea_navsat_driver nmea_serial_driver.launch.py
    ```
+   ROStopic:
+   - /fix
+   - /vel
+   - /heading
+   
    To read the data, open another terminal
    ```
    source /Path to WorkSpace/<WorkSpace>/install/setup.bash

@@ -1,6 +1,11 @@
-#define CH1 2
-#define CH2 3
-#define CH3 4
+#define THRO 2
+#define STEER 3
+#define sWA 5
+#define sWD 6
+#define sWB 7
+#define sWC 8
+#define sWE 9
+#define sWF 10
 
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
   int ch = pulseIn(channelInput, HIGH, 50000);
@@ -12,23 +17,44 @@ int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(CH1, INPUT);
-  pinMode(CH2, INPUT);
-  pinMode(CH3, INPUT);
+  pinMode(THRO, INPUT);
+  pinMode(STEER, INPUT);
+  pinMode(sWA, INPUT);
+  pinMode(sWB, INPUT);
+  pinMode(sWC, INPUT);
+  pinMode(sWD, INPUT);
+  pinMode(sWE, INPUT);
+  pinMode(sWF, INPUT);
 }
 
-int ch1Value, ch2Value, ch3Value;
+int throttle_cmd, steer_angle, sWA_value, sWB_value, sWC_value, sWD_value, sWE_value, sWF_value;
 
 void loop() {
   // put your main code here, to run repeatedly:
-  ch1Value = readChannel(CH1, -100, 100, 0);
-  ch2Value = readChannel(CH2, -100, 100, 0);
-  ch3Value = readChannel(CH3, -100, 100, -100);  
-//  Serial.print("Ch1: ");
-  Serial.print(ch1Value);
+  throttle_cmd = readChannel(THRO, -100, 100, 0);
+  steer_angle = readChannel(STEER, -100, 100, 0);
+  sWA_value = readChannel(sWA, -100, 100, 0);
+  sWB_value = readChannel(sWB, -100, 100, 0);
+  sWC_value = readChannel(sWC, -100, 100, 0);
+  sWD_value = readChannel(sWD, -100, 100, 0);
+  sWE_value = readChannel(sWE, -100, 100, 0);
+  sWF_value = readChannel(sWE, -100, 100, 0);
+  
+//  Serial.print("throttle cmd: ");
+  Serial.print(throttle_cmd);
   Serial.print(",");
-  Serial.println(ch2Value);
-//  Serial.print(" Ch3: ");
-//  Serial.println(ch3Value);  
+  Serial.println(steer_angle);
+  Serial.print(",");
+  Serial.print(sWA_value);
+  Serial.print(",");
+  Serial.print(sWB_value);
+  Serial.print(",");
+  Serial.print(sWC_value);
+  Serial.print(",");
+  Serial.print(sWD_value);
+  Serial.print(",");
+  Serial.print(sWE_value);
+  Serial.print(",");
+  Serial.println(sWF_value);
   delay(500);
 }
