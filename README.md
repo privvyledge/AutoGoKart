@@ -44,14 +44,20 @@ source /Path to gokart_ws/gokart_ws/install/setup.bash
    ```
    ROStopic: `joy/at9s`
    - `header.frame_id`: `at9s_joy`
-   - `axes[0]`: throttle command (float, -1: reverse max, 1: forward max)
-   - `axes[1]`: steering command (float, -1: right max, 1: left max)
-   - `buttons`: [sWA, sWB, sWC, sWD] (int, 0: disabled (buttons are at reverse position), 1: Enabled)
+   - `axes[0]`: throttle command (float, -1: reverse max, 1: forward max) (Right vertical)
+   - `axes[1]`: steering command (float, -1: right max, 1: left max) (left horizonal)
+   - `axes[2]`: Rudder command (float, -1: reverse max, 1: forward max) (left vertical)
+   - `axes[3]`: Elevator command (float, -1: right max, 1: left max) (Right horizonal)
+   
+   - `buttons`: [sWA, sWB, sWC, sWD, sWE, sWF] (int, 0: disabled (buttons are at reverse position), 1: Enabled)
 
    (2) IMU
    ```
    ros2 launch wit_ros2_imu rviz_and_imu.launch.py
    ```
+   ROStopic:
+   - /imu/raw_data
+   
    (3) GPS
    ```
    ros2 launch nmea_navsat_driver nmea_serial_driver.launch.py

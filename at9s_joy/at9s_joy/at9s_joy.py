@@ -18,6 +18,8 @@ class ATJoyNode(Node):
 		
 		self.ser = serial.Serial( port = '/dev/ttyACM0',baudrate=115200)  # series port of arduino
 		self.ser.isOpen()  # open port receiver
+		self.buttons = [0,0,0,0,0,0]
+		self.push = [0.0,0.0,0.0,0.0]
 		
 	def isint(self,num):
 		try:
@@ -39,26 +41,33 @@ class ATJoyNode(Node):
 			if self.isint(spl):
 				# The first two are for axes
 				# mapping from [2000,1000] to [-1,1]
-				spl[0] = 1.0-2.0*(float(spl[0])-1000.0)/(2000.0-1000.0)	
-				spl[1] = 1.0-2.0*(float(spl[1])-1000.0)/(2000.0-1000.0)
-				for i in range(2,len(spl)):
-					# For buttons: back: 2000, forward: 1000;
-					if int(spl[i])<1500:
-						spl[i]=1;
-					else:
-						spl[i]=0;
-			
+				self.push[0] = -1.0+2.0*(float(spl[0])-1000.0)/(2000.0-1000.0) # throttle
+				self.push[1] = -1.0+2.0*(float(spl[1])-1000.0)/(2000.0-1000.0) # steering
+				self.push[2] = 1.0-2.0*(float(spl[2])-1000.0)/(2000.0-1000.0) # Rudder
+				self.push[3] = -1.0+2.0*(float(spl[3])-1000.0)/(2000.0-1000.0) # Elevator
+
+				
+				# if the port does not have data for long time, 
+				# arduino does not send any data
+				if len(spl)> 4:
+					for i in range(2,len(spl)):
+						# For buttons: back: 2000, forward: 1000;
+						if int(spl[i])<1500:
+							self.buttons[i-4]=1;
+						else:
+							self.buttons[i-4]=0;
+					 
 				# Publisher
 				msg  = Joy()
 				msg.header.stamp = self.get_clock().now().to_msg()
 				msg.header.frame_id = 'at9s_joy'
-				msg.axes = spl[0:2]
-				msg.buttons = spl[2:len(spl)]
+				msg.axes = self.push
+				msg.buttons = self.buttons
 				self.command_publisher_.publish(msg)
 				
 				# printing for debug purpose
-				self.get_logger().info('throttle: "%f, steering: "%f" /n' % (msg.axes[0], msg.axes[1]))
-				self.get_logger().info('sWA: "%d, sWD: "%d" /n' % (msg.buttons[0],msg.buttons[3]))
+				self.get_logger().info('throttle: "%f", steering: "%f" /n' % (msg.axes[0], msg.axes[1]))
+				self.get_logger().info('sWA: "%d", sWD: "%d" /n' % (msg.buttons[0],msg.buttons[3]))
 
 
 def main(args=None):
