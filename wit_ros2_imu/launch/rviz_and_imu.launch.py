@@ -35,7 +35,7 @@ def generate_launch_description():
 		name='imu',
 		remappings=[('/wit/imu', '/imu/data')],
 		parameters=[{'port': '/dev/imu_usb'},
-					{"baud": 9600}],
+					{"baud": 921600}],
 		output="screen",
 		arguments=['-d', LaunchConfiguration("rviz_cfg_path_param")],
 		condition=IfCondition(LaunchConfiguration('with_rviz'))
