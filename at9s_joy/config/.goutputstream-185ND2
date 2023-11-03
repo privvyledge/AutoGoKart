@@ -1,0 +1,3 @@
+atjoy_node:
+  ros__parameters:
+    sensitivity: 0.5

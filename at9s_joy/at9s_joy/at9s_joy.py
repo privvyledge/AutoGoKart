@@ -21,6 +21,8 @@ class ATJoyNode(Node):
 		self.buttons = [0,0,0,0,0,0]
 		self.push = [0.0,0.0,0.0,0.0]
 		
+		self.declare_parameter('sensitivity', 1.0)
+		
 	def isint(self,num):
 		try:
 			for k in num:
@@ -30,6 +32,10 @@ class ATJoyNode(Node):
 			return False
 		
 	def timer_callback(self):
+		# sensitivities param
+		sen_gain = self.get_parameter('sensitivity').value
+		
+		# read arduino
 		out = ''
 		while self.ser.inWaiting() > 0:
 			out += str(self.ser.readline(),encoding='utf-8')
@@ -41,16 +47,32 @@ class ATJoyNode(Node):
 			if self.isint(spl):
 				# The first two are for axes
 				# mapping from [2000,1000] to [-1,1]
-				self.push[0] = -1.0+2.0*(float(spl[0])-1000.0)/(2000.0-1000.0) # throttle
-				self.push[1] = -1.0+2.0*(float(spl[1])-1000.0)/(2000.0-1000.0) # steering
-				self.push[2] = 1.0-2.0*(float(spl[2])-1000.0)/(2000.0-1000.0) # Rudder
-				self.push[3] = -1.0+2.0*(float(spl[3])-1000.0)/(2000.0-1000.0) # Elevator
+				data_length = len(spl)
+				try:
+					self.push[0] = -1.0+2.0*(float(spl[0])-1000.0)/(2000.0-1000.0) # throttle
+					self.push[0] = sen_gain*self.push[0]
+				except ValueError: # if there is no data received for long time
+					self.push[0] = 0.0
+				try:
+					self.push[1] = -1.0+2.0*(float(spl[1])-1000.0)/(2000.0-1000.0) # steering
+				except ValueError:
+					self.push[1] = 0.0
+				try:
+					self.push[2] = 1.0-2.0*(float(spl[2])-1000.0)/(2000.0-1000.0) # Rudder
+				except ValueError:
+					self.push[2] = 0.0
+				try:
+					self.push[3] = -1.0+2.0*(float(spl[3])-1000.0)/(2000.0-1000.0) # Elevator
+				except ValueError:
+					self.push[3] = 0.0
+					
+				
 
 				
 				# if the port does not have data for long time, 
 				# arduino does not send any data
-				if len(spl)> 4:
-					for i in range(2,len(spl)):
+				if data_length> 4:
+					for i in range(2,data_length):
 						# For buttons: back: 2000, forward: 1000;
 						if int(spl[i])<1500:
 							self.buttons[i-4]=1;
