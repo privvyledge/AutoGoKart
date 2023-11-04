@@ -21,7 +21,7 @@ class ATJoyNode(Node):
 		self.buttons = [0,0,0,0,0,0]
 		self.push = [0.0,0.0,0.0,0.0]
 		
-		self.declare_parameter('sensitivity', 1.0)
+		self.declare_parameter('sensitivity', 0.8)
 		
 	def isint(self,num):
 		try:
@@ -51,19 +51,23 @@ class ATJoyNode(Node):
 				try:
 					self.push[0] = -1.0+2.0*(float(spl[0])-1000.0)/(2000.0-1000.0) # throttle
 					self.push[0] = sen_gain*self.push[0]
-				except ValueError: # if there is no data received for long time
+				except Exception: # if there is no data received for long time
+					self.get_logger().info('No throttle commands /n')
 					self.push[0] = 0.0
 				try:
 					self.push[1] = -1.0+2.0*(float(spl[1])-1000.0)/(2000.0-1000.0) # steering
-				except ValueError:
+				except Exception:
+					self.get_logger().info('No steering commands /n')
 					self.push[1] = 0.0
 				try:
 					self.push[2] = 1.0-2.0*(float(spl[2])-1000.0)/(2000.0-1000.0) # Rudder
-				except ValueError:
+				except Exception:
+					self.get_logger().info('No rudder commands /n')
 					self.push[2] = 0.0
 				try:
 					self.push[3] = -1.0+2.0*(float(spl[3])-1000.0)/(2000.0-1000.0) # Elevator
-				except ValueError:
+				except Exception:
+					self.get_logger().info('No elevator commands /n')
 					self.push[3] = 0.0
 					
 				

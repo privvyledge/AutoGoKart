@@ -4,13 +4,15 @@ from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 from geometry_msgs.msg import PointStamped
 from ackermann_msgs.msg import AckermannDriveStamped
+import serial
 
 class Command_Node(Node):
 	def __init__(self):
 		super().__init__("gokart_command")
-		self.get_logger().info("Node Created")
+		self.get_logger().info("Node Created-for serial")
 		self.subscribe = self.create_subscription(AckermannDriveStamped,"/teleop",self.getControll,10)
 		self.sbw_publisher = self.create_publisher(PointStamped,"/sbw_control",10)
+		self.ser = serial.Serial("/dev/ttyUSB0",115200,timeout=1)
 		
 	def map(self,input):
 		value = float(input +1) / 2
@@ -24,6 +26,11 @@ class Command_Node(Node):
 		msg.point.y = 0.0
 		msg.point.z = 0.0
 		self.sbw_publisher.publish(msg)
+		self.serial_communication(data.drive.steering_angle)
+		
+	def serial_communication(self,msg):
+		self.ser.write(str(msg).encode("utf-8"))
+		self.ser.flush()
 	
 def main(args=None):
 	rclpy.init(args=args)
