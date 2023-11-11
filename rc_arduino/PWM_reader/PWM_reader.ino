@@ -12,9 +12,10 @@
 
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
   int ch = pulseIn(channelInput, HIGH, 50000);
-  //if (ch < 100) return defaultValue;
-  //return map(ch, 1000, 2000, minLimit, maxLimit);
-  return ch;
+  if (ch < 100) return defaultValue;
+  int mapped_input = map(ch, 1000, 2000, minLimit, maxLimit);
+  return mapped_input;
+  //return ch;
 }
 
 void setup() {
@@ -32,40 +33,45 @@ void setup() {
   pinMode(sWF, INPUT);
 }
 
-int throttle_cmd, steer_angle, Rudder_angle, Elev_height, sWA_value, sWB_value, sWC_value, sWD_value, sWE_value, sWF_value;
+// uint8_t throttle_cmd, steer_angle, Rudder_angle, Elev_height, sWA_value, sWB_value, sWC_value, sWD_value, sWE_value, sWF_value;
+uint8_t cmd[10];
 
 void loop() {
   // put your main code here, to run repeatedly:
-  throttle_cmd = readChannel(THRO, -100, 100, 0);
-  steer_angle = readChannel(STEER, -100, 100, 0);
-  Rudder_angle = readChannel(Rudder, -100, 100, 0);
-  Elev_height = readChannel(ELEV, -100, 100, 0);
-  sWA_value = readChannel(sWA, -100, 100, 0);
-  sWB_value = readChannel(sWB, -100, 100, 0);
-  sWC_value = readChannel(sWC, -100, 100, 0);
-  sWD_value = readChannel(sWD, -100, 100, 0);
-  sWE_value = readChannel(sWE, -100, 100, 0);
-  sWF_value = readChannel(sWE, -100, 100, 0);
+  cmd[0] = readChannel(THRO, 0, 100, 0);
+  cmd[1] = readChannel(STEER, 0, 100, 0);
+  cmd[2] = readChannel(Rudder, 0, 100, 0);
+  cmd[3] = readChannel(ELEV, 0, 100, 0);
+  cmd[4] = readChannel(sWA, 0, 100, 0);
+  cmd[5] = readChannel(sWB, 0, 100, 0);
+  cmd[6] = readChannel(sWC, 0, 100, 0);
+  cmd[7] = readChannel(sWD, 0, 100, 0);
+  cmd[8] = readChannel(sWE, 0, 100, 0);
+  cmd[9] = readChannel(sWE, 0, 100, 0);
+
+  // uint8_t buf[10] = {throttle_cmd, steer_angle, Rudder_angle, Elev_height, sWA_value, sWB_value, sWC_value, sWD_value, sWE_value, sWF_value};
+
+  Serial.write(cmd,sizeof(cmd));
+  Serial.write("\n");
   
 //  Serial.print("throttle cmd: ");
-  Serial.print(throttle_cmd);
-  Serial.print(",");
-  Serial.println(steer_angle);
-  Serial.print(",");
-  Serial.print(Rudder_angle);
-  Serial.print(",");
-  Serial.println(Elev_height);
-  Serial.print(",");
-  Serial.print(sWA_value);
-  Serial.print(",");
-  Serial.print(sWB_value);
-  Serial.print(",");
-  Serial.print(sWC_value);
-  Serial.print(",");
-  Serial.print(sWD_value);
-  Serial.print(",");
-  Serial.print(sWE_value);
-  Serial.print(",");
-  Serial.println(sWF_value);
-  delay(500);
+  //Serial.print(throttle_cmd);
+  //Serial.print(",");
+  //Serial.println(steer_angle);
+  //Serial.print(",");
+  //Serial.print(Rudder_angle);
+  //Serial.print(",");
+  //Serial.println(Elev_height);
+  //Serial.print(",");
+  //Serial.print(sWA_value);
+  //Serial.print(",");
+  //Serial.print(sWB_value);
+  //Serial.print(",");
+  //Serial.print(sWC_value);
+  //Serial.print(",");
+  //Serial.print(sWD_value);
+  //Serial.print(",");
+  //Serial.print(sWE_value);
+  //Serial.print(",");
+  //Serial.println(sWF_value);
 }

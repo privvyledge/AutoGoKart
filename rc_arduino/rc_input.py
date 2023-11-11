@@ -13,17 +13,12 @@ ser = serial.Serial( port = '/dev/ttyACM0',baudrate=115200)
 ser.isOpen()
 
 while 1:
-	out = ''
+	out = []
 	while ser.inWaiting() > 0:
-		out += str(ser.readline(),encoding='utf-8')
-	
-	
-	if out != '':
-		print(out)
-		spl = out.split(",")
-		for k in spl:
-			print(isint(k));
-			if isint(k):
-				k = 1-2*(int(k)-1000)/(2000-1000)
-				print(k)
+		out = ser.readline().strip()
+		for elements in out:
+			print(elements)
+		print("end")
+		#out1 = out.partition(b'')
+		#print(out1[0])
 		
