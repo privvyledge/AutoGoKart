@@ -7,13 +7,14 @@ import threading
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
+from sensor_msgs.msg import MagneticField
 
 key = 0
 flag = 0
 buff = {}
 angularVelocity = [0, 0, 0]
 acceleration = [0, 0, 0]
-magnetometer = [0, 0, 0]
+magnetometer = [0.0, 0.0, 0.0]
 angle_degree = [0, 0, 0]
 
 
@@ -118,13 +119,13 @@ def get_quaternion_from_euler(roll, pitch, yaw):
       :return qx, qy, qz, qw: The orientation in quaternion [x,y,z,w] format
     """
     qx = np.sin(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) - np.cos(roll / 2) * np.sin(pitch / 2) * np.sin(
-        yaw / 2)
+            yaw / 2)
     qy = np.cos(roll / 2) * np.sin(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.cos(pitch / 2) * np.sin(
-        yaw / 2)
+            yaw / 2)
     qz = np.cos(roll / 2) * np.cos(pitch / 2) * np.sin(yaw / 2) - np.sin(roll / 2) * np.sin(pitch / 2) * np.cos(
-        yaw / 2)
+            yaw / 2)
     qw = np.cos(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.sin(pitch / 2) * np.sin(
-        yaw / 2)
+            yaw / 2)
 
     return [qx, qy, qz, qw]
 
@@ -133,14 +134,17 @@ class IMUDriverNode(Node):
     def __init__(self, port_name):
         super().__init__('imu_driver_node')
 
-        # 初始化IMU消息
+        # Initialize IMU message
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
+        self.mag_msg = MagneticField()
+        self.mag_msg.header.frame_id = 'mag_link'
 
-        # 创建IMU数据发布器
+        # Create IMU data publisher
         self.imu_pub = self.create_publisher(Imu, 'imu/data_raw', 10)
-        #self.port = self.get_parameter('port')
-        #self.baud_rate = self.get_parameter('baud')
+        self.mag_pub = self.create_publisher(MagneticField, 'imu/magnetic', 10)
+        # self.port = self.get_parameter('port')
+        # self.baud_rate = self.get_parameter('baud')
 
         # 启动IMU驱动线程
         self.driver_thread = threading.Thread(target=self.driver_loop, args=(port_name,))
@@ -180,24 +184,28 @@ class IMUDriverNode(Node):
                             self.imu_data()
 
     def imu_data(self):
+        # read accelerameter data
         accel_x, accel_y, accel_z = acceleration[0], acceleration[1], acceleration[2]  # struct.unpack('hhh', accel_raw)
-        accel_scale = 16 / 32768.0
+        accel_scale = 1.0  # 16 / 32768.0
         accel_x, accel_y, accel_z = accel_x * accel_scale, accel_y * accel_scale, accel_z * accel_scale
 
-        # 读取陀螺仪数据
+        # read gyroscope data
         gyro_x, gyro_y, gyro_z = angularVelocity[0], angularVelocity[1], angularVelocity[
             2]  # struct.unpack('hhh', gyro_raw)
-        gyro_scale = 2000 / 32768.0
+        gyro_scale = 1.0  # 2000 / 32768.0
         gyro_x, gyro_y, gyro_z = math.radians(gyro_x * gyro_scale), math.radians(gyro_y * gyro_scale), math.radians(
             gyro_z * gyro_scale)
 
-        # 计算角速度
+        # read magnemeter data
+        mag_field_x, mag_field_y, mag_field_z = float(magnetometer[0]), float(magnetometer[1]), float(magnetometer[2])
+
+        # calculate angular speed
         dt = 0.01
         wx, wy, wz = gyro_x, gyro_y, gyro_z
         ax, ay, az = accel_x, accel_y, accel_z
         roll, pitch, yaw = self.compute_orientation(wx, wy, wz, ax, ay, az, dt)
 
-        # 更新IMU消息
+        # update IMU message
         self.imu_msg.header.stamp = self.get_clock().now().to_msg()
         self.imu_msg.linear_acceleration.x = accel_x
         self.imu_msg.linear_acceleration.y = accel_y
@@ -215,11 +223,18 @@ class IMUDriverNode(Node):
         self.imu_msg.orientation.z = qua[2]
         self.imu_msg.orientation.w = qua[3]
 
-        # 发布IMU消息
+        # update MagneticField message
+        self.mag_msg.header.stamp = self.get_clock().now().to_msg()
+        self.mag_msg.magnetic_field.x = mag_field_x
+        self.mag_msg.magnetic_field.y = mag_field_y
+        self.mag_msg.magnetic_field.z = mag_field_z
+
+        # publish IMU messages
         self.imu_pub.publish(self.imu_msg)
+        self.mag_pub.publish(self.mag_msg)
 
     def compute_orientation(self, wx, wy, wz, ax, ay, az, dt):
-        # 计算旋转矩阵
+        # calculate transformation matrix
         Rx = np.array([[1, 0, 0],
                        [0, math.cos(ax), -math.sin(ax)],
                        [0, math.sin(ax), math.cos(ax)]])
@@ -231,7 +246,7 @@ class IMUDriverNode(Node):
                        [0, 0, 1]])
         R = Rz.dot(Ry).dot(Rx)
 
-        # 计算欧拉角
+        # calculate euler angle
         roll = math.atan2(R[2][1], R[2][2])
         pitch = math.atan2(-R[2][0], math.sqrt(R[2][1] ** 2 + R[2][2] ** 2))
         yaw = math.atan2(R[1][0], R[0][0])
